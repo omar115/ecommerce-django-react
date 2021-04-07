@@ -6,9 +6,18 @@ from .models import Product
 
 
 class UserSerializer(serializers.ModelSerializer):
+    
+    name = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User     #User model to serialize
-        fields = ['id', 'username', 'email']      #will return everything/every info
+        fields = ['id', 'username', 'email', 'name']      #will return everything/every info
+    
+    def get_name(self, obj):
+        name = obj.first_name
+        if name == '':
+            name = obj.email
+        
+        return name
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
