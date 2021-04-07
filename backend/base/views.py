@@ -1,4 +1,4 @@
-from django.contrib.auth.models import update_last_login
+from django.contrib.auth.models import User, update_last_login
 from django.db.models import manager
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -7,7 +7,7 @@ from .products import products
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Product
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, UserSerializer
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -47,6 +47,16 @@ def getRoutes(request):
     ]
     # return JsonResponse(routes, safe=False)
     return Response(routes)
+
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user
+    # return JsonResponse(products, safe=False)
+    # products = Product.objects.all()
+    
+    serializer = UserSerializer(user, many = False)   #many=true means multiple objects
+    
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def getProducts(request):
