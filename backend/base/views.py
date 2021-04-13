@@ -3,11 +3,11 @@ from django.db.models import manager
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import serializers
-from .products import products
+# from .products import products
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Product
-from .serializers import ProductSerializer, UserSerializer
+from .serializers import ProductSerializer, UserSerializer, UserSerializerWithToken
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -19,9 +19,14 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         refresh = self.get_token(self.user)
 
-        data['username'] = self.user.username
-        data['email'] = self.user.email 
+        # data['username'] = self.user.username
+        # data['email'] = self.user.email 
         
+        serializer = UserSerializerWithToken(self.user).data
+
+        for k, v in serializer.items():
+            data[k] = v
+
         return data
 
     
